@@ -18,25 +18,27 @@ IDENTIFIER="linux-386 linux-amd64 linux-arm linux-arm64 linux-mips linux-mipsle 
 
 for id in ${IDENTIFIER}; do
 	echo "build ${id}"
-	mkdir ${BASEDIR}/dist/NKNMining-${id}
-	cp -r ${BASEDIR}/init_files/* ${BASEDIR}/dist/NKNMining-${id}/
 
-	mkdir -p ${BASEDIR}/dist/NKNMining-${id}/web/
-	cp -r ${BASEDIR}/NKNMining/web/dist/* ${BASEDIR}/dist/NKNMining-${id}/web/
+	mkdir ${BASEDIR}/dist/NKNMining
+	cp -r ${BASEDIR}/init_files/* ${BASEDIR}/dist/NKNMining/
+
+	mkdir -p ${BASEDIR}/dist/NKNMining/web/
+	cp -r ${BASEDIR}/NKNMining/web/dist/* ${BASEDIR}/dist/NKNMining/web/
 
 	id_os=$(echo ${id} | cut -d - -f 1)
 	id_arch=$(echo ${id} | cut -d - -f 2)
 
 	GOPATH=$GOPATH:${BASEDIR}/NKNMining/ GOOS=${id_os} GOARCH=${id_arch} GOMIPS=softfloat go build
 	if [ "${id_os}" = "windows" ]; then
-		mv ${BASEDIR}/NKNMining/src/NKNMining/NKNMining.exe ${BASEDIR}/dist/NKNMining-${id}/
+		mv ${BASEDIR}/NKNMining/src/NKNMining/NKNMining.exe ${BASEDIR}/dist/NKNMining/
 	else
-		mv ${BASEDIR}/NKNMining/src/NKNMining/NKNMining ${BASEDIR}/dist/NKNMining-${id}/
+		mv ${BASEDIR}/NKNMining/src/NKNMining/NKNMining ${BASEDIR}/dist/NKNMining/
 	fi
 
 	cd ${BASEDIR}/dist
-	zip -r "NKNMining-${id}.zip" "NKNMining-${id}"
+	tar -zcvf "NKNMining-${id}.tgz" "NKNMining"
+	rm -rf "NKNMining"
 	cd ${BASEDIR}/NKNMining/src/NKNMining/
-done 
+done
 
 echo 'done! ^_T'
