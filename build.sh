@@ -29,14 +29,15 @@ for id in ${IDENTIFIER}; do
 	id_arch=$(echo ${id} | cut -d - -f 2)
 
 	GOPATH=$GOPATH:${BASEDIR}/NKNMining/ GOOS=${id_os} GOARCH=${id_arch} GOMIPS=softfloat go build
+	
+	cd ${BASEDIR}/dist
 	if [ "${id_os}" = "windows" ]; then
 		mv ${BASEDIR}/NKNMining/src/NKNMining/NKNMining.exe ${BASEDIR}/dist/NKNMining/
+		zip -r "NKNMining-${id}.zip" "NKNMining"
 	else
 		mv ${BASEDIR}/NKNMining/src/NKNMining/NKNMining ${BASEDIR}/dist/NKNMining/
+		tar -zcvf "NKNMining-${id}.tgz" "NKNMining"
 	fi
-
-	cd ${BASEDIR}/dist
-	tar -zcvf "NKNMining-${id}.tgz" "NKNMining"
 	rm -rf "NKNMining"
 	cd ${BASEDIR}/NKNMining/src/NKNMining/
 done
